@@ -1,0 +1,23 @@
+{
+  "name": "spotify-payment-backend",
+  "version": "1.0.0",
+  "description": "backend API for Splitify",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dingdongg/spotify-payment-backend.git"
+  },
+  "author": "dingdongg, michaelt16",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dingdongg/spotify-payment-backend/issues"
+  },
+  "homepage": "https://github.com/dingdongg/spotify-payment-backend#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
