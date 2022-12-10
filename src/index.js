@@ -1,7 +1,8 @@
 const express = require ('express');
 // const mongoose = require ('mongoose');
 const app = express();
-const user = require ("./database/databaseSetup")
+const user = require ("./database/userFunctions")
+const db = require ("./database/databaseSetup")
 // mongoose.connect("mongodb+srv://kimtandyo1132:DarpQA2vbi43btzy@splitify-backend.b9proob.mongodb.net/?retryWrites=true&w=majority")
 // .then(() =>{
 
@@ -34,11 +35,20 @@ const user = require ("./database/databaseSetup")
 
 
 app.get("/", (req,res) =>{
-        user.createUser("dingdong","donggyu","kim","test@gmail.com", "enctrypyted", "something.png", 27, 00, false )
+       //user.createUser("dingdong","donggyu","kim","test@gmail.com", "enctrypyted", "something.png", 27, 00, false );
+       
+        user.changeBalance("6393eb4528bc9ff5a377f3ad", 1532);
+        user.editPassword("6393eb4528bc9ff5a377f3ad", "testpasword12");
+        user.editFirstName("6393eb4528bc9ff5a377f3ad", "Michael")
+        user.editLastName("6393eb4528bc9ff5a377f3ad", "Tandyo")
+        user.editEmail("6393eb4528bc9ff5a377f3ad", "test2@gmail.com")
+        user.editUserName("6393eb4528bc9ff5a377f3ad", "mahkel")
+        user.changeProfilePhoto("6393eb4528bc9ff5a377f3ad", "new pfp ")
+        user.verifyPassword("testpassword12", "$2b$10$XFwvCmCwgAG5vgrlmp0NRePmlGYZFRh.PAbROejDILA2l0YsVjPyO")
 
         //model find finds and return documents
         // did {} to get all obj
-        user.UserModel.find ({}, (err,found) => {
+        db.UserModel.find ({}, (err,found) => {
             if (!err) {
                 res.send (found);
             } 
