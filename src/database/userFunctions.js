@@ -7,7 +7,6 @@ const bcrypt = require ("bcrypt")
 
 //create user
 
-
 function createUser (username,firstname,lastname,email,password,picture,accountBalance,roleMask,adminStatus){
     user.UserModel.createCollection().then (()=>{
         const testValue = new user.UserModel({
