@@ -1,30 +1,22 @@
 import { Schema, model } from "mongoose";
 
 
+export interface IPayment {
 
-enum Status {
-    Accepted,
-    Pending,
-    Rejected
-} 
-
-export interface IPayments {
-
-    memberId: Schema.Types.ObjectId,
-    payment:string,
-    paymentAmount: number,
-    paymentDate:number,
-    paymentStatus: Status
+    memberId?: Schema.Types.ObjectId,
+    paymentAmount: Number,
+    paymentDate:Date,
+    paymentStatus: String;
 
 }
 
 
-const paymentsSchema = new Schema <IPayments>({
-    memberId: { type: Schema.Types.ObjectId, required: true},
-    payment:  { type: String, required: true},
+const paymentsSchema = new Schema <IPayment>({
+    memberId: { type: Schema.Types.ObjectId, required: false},
     paymentAmount: { type: Number, required: true },
-    paymentDate: { type: Number, required: true }
+    paymentDate: { type: Date, required: true },
+    paymentStatus: { type: String, required: true }
 
 })
 
-export const Payments = model<IPayments>("Payment", paymentsSchema);
+export const Payments = model<IPayment>("Payment", paymentsSchema);
