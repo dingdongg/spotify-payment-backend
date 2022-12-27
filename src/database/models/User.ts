@@ -1,7 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 
 export interface IUser {
-    id: Types.ObjectId;
     username?: string; // remove and use email as username?
     firstName: string;
     lastName: string;
@@ -15,7 +14,6 @@ export interface IUser {
 }
 
 const userSchema = new Schema<IUser>({
-    id: Schema.Types.ObjectId,
     username: String,
     firstName: {
         type: String,
