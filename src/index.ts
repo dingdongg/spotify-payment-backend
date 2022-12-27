@@ -11,6 +11,16 @@ dotenv.config();
 
 app.get("/", async (req, res) => {
     console.log("GOT GET REQUEST");
+
+    // const test = {
+    //     firstName: "Michael",
+    //     lastName: "Tandyo",
+    //     email: "test@gmail.com",
+    //     password: "test"
+    // }
+    // const userController = new UserController();
+    // console.log(test);
+    // await userController.createUser(test as IUser);
     const user = await User.find().exec();
     res.send(user);
 });
@@ -20,6 +30,7 @@ app.post("/", async (req, res) => {
     
     const { body } = req;
     console.log("BODY", req.body);
+    console.log(req);
     await userController.createUser(body as IUser);
     res.status(204).send();
 })
