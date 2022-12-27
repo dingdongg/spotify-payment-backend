@@ -33,6 +33,7 @@ export default class UserController {
     }
 
     public async updateUser(userId: string, newInfo: IUser): Promise<void> {
+        // refer to tests/unit/user/user.test.ts for information on changes requested
         await User.findByIdAndUpdate(userId, newInfo).exec();
     }
 
