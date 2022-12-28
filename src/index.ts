@@ -18,18 +18,20 @@ app.get("/", async (req, res) => {
     
 
     const test = {
-        paymentAmount: 54,
+        paymentAmount: 24,
         paymentDate: new Date(),
-        paymentStatus: Status[0]
+        paymentStatus: Status[2]
     }
     console.log(test);
     const paymentController = new PaymentsController();
-    await paymentController.createPayment(test as IPayment);
+    // await paymentController.createPayment(test as IPayment);
+    paymentController.cronPayment();
 
     // const user = await User.find().exec();
-    // res.send(user);
-    const payments = await Payments.find().exec();
-    res.send(payments);
+    // res.send(user);y
+
+    // const payments = await Payments.find().exec();
+    // res.send(payments);
 });
 
 app.post("/", async (req, res) => {

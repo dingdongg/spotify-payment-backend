@@ -1,4 +1,5 @@
 import {Payments, IPayment} from "../database/models/Payments";
+import * as cron from "node-cron";
 
 export default class PaymentsController {
 
@@ -21,6 +22,12 @@ export default class PaymentsController {
         await Payments.findByIdAndUpdate(paymentId, newInfo).exec();
     }
     
+    public cronPayment (): void{
+        cron.schedule ("*/10 * * * * *", ()=>{
+            console.log("testing cron");
+        });
+
+    }
     
 
 

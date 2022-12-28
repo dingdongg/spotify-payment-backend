@@ -8,9 +8,9 @@ function validate(input: string | undefined): boolean {
 }
 
 export const connect = () => {
-    if (validate(process.env.DATABASE)) {
+    if (validate(process.env.TEST_DB)) {
         console.log("VALID");
-        mongoose.connect(process.env.DATABASE as string)
+        mongoose.connect(process.env.TEST_DB as string)
             .then(() => {
                 console.log("connected to DB");
             })
