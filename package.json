@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.ts",
-    "test": "NODE_ENV=test mocha --parallel --require ts-node/register tests/**/*.test.ts",
-    "dev": "NODE_ENV=dev ts-node src/index.ts"
+    "test": "cross-env NODE_ENV=test mocha --parallel --require ts-node/register tests/**/*.test.ts",
+    "dev": "cross-env NODE_ENV=dev ts-node src/index.ts"
   },
   "repository": {
     "type": "git",
