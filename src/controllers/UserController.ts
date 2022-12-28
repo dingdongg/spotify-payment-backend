@@ -1,6 +1,7 @@
 import { User, IUser } from "../database/models/User";
 import { Types } from "mongoose";
 import bcrypt from "bcrypt";
+import * as cron from "node-cron";
 
 
 export default class UserController {
@@ -50,5 +51,13 @@ export default class UserController {
         return false;
     }
 
+    public async cronPayment (): Promise<void>{
+        cron.schedule ("*/10 * * * * *", async ()=>{
+            console.log("testing cron");
+            await User.updateMany({}, { $inc: { accountBalance: 3  }} );
+
+        });
+
+    }
     
 }

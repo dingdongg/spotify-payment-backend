@@ -15,20 +15,30 @@ dotenv.config();
 app.get("/", async (req, res) => {
     console.log("GOT GET REQUEST");
 
+    // const test = {
+    //     firstName: "Gunyup",
+    //     lastName: "Tandyo",
+    //     email: "test@gmail.com",
+    //     password: "test",
+    //     accountBalance: 452
+
+    // }
+    // const userController = new UserController();
+    // await userController.createUser(test as IUser);
+    // await userController.cronPayment();
+
+    // const test = {
+    //     paymentAmount: 24,
+    //     paymentDate: new Date(),
+    //     paymentStatus: Status[2]
+    // }
+    // console.log(test);
+    // const paymentController = new PaymentsController();
+    // await paymentController.createPayment(test as IPayment);
     
 
-    const test = {
-        paymentAmount: 24,
-        paymentDate: new Date(),
-        paymentStatus: Status[2]
-    }
-    console.log(test);
-    const paymentController = new PaymentsController();
-    // await paymentController.createPayment(test as IPayment);
-    paymentController.cronPayment();
-
-    // const user = await User.find().exec();
-    // res.send(user);y
+    const user = await User.find().exec();
+    res.send(user);
 
     // const payments = await Payments.find().exec();
     // res.send(payments);
