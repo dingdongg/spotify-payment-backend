@@ -20,12 +20,12 @@ export default class PaymentController {
         await Payments.findByIdAndUpdate(paymentId, newInfo).exec();
     }
     
-    public async createPaymentHistory (): Promise<Object> {
+    public async getPaymentHistory(): Promise<Object> {
         const payments = await Payments.find().sort({paymentDate: 1}).exec();
         return payments;
     }
 
-    public async findUserHistory(userId: string): Promise<Object>{
+    public async findUserPaymentHistory(userId: string): Promise<Object>{
         const payments = await Payments.find({memberId: userId}).sort({paymentDate: 1}).exec();
         return payments;
     }
