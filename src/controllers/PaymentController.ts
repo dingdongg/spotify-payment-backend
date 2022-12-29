@@ -1,8 +1,7 @@
 import {Payments, IPayment} from "../database/models/Payments";
 
-export default class PaymentsController {
+export default class PaymentController {
 
-    // i made the schema now I am passing in and saving what i am inputing into the db
     public async createPayment (newPaymentsInfo: IPayment ): Promise<void>{
         
         const newPayment = new Payments(newPaymentsInfo);
@@ -21,11 +20,15 @@ export default class PaymentsController {
         await Payments.findByIdAndUpdate(paymentId, newInfo).exec();
     }
     
-    
-    
+    public async createPaymentHistory (): Promise<Object> {
+        const payments = await Payments.find().sort({paymentDate: 1}).exec();
+        return payments;
+    }
 
-
-
+    public async findUserHistory(userId: string): Promise<Object>{
+        const payments = await Payments.find({memberId: userId}).sort({paymentDate: 1}).exec();
+        return payments;
+    }
 
 
 }
