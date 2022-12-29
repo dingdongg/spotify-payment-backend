@@ -10,7 +10,7 @@ export interface IPayment {
 }
 
 const paymentsSchema = new Schema <IPayment>({
-    memberId: { type: Schema.Types.ObjectId, required: true },
+    memberId: { type: Schema.Types.ObjectId, required: true, ref: 'User'},
     paymentAmount: { type: Number, required: true },
     paymentDate: { type: Date, required: true },
     paymentStatus: { type: String, required: true }
