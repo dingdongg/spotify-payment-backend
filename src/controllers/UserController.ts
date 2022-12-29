@@ -11,7 +11,7 @@ export default class UserController {
 
     public async getUser(userId: string): Promise<IUser> {
         
-        const user = await User.findById(userId).exec();
+        const user = await User.findById(userId, "firstName lastName email").exec();
         if (!user) {
             throw new Error("404: could not find user");
         }
