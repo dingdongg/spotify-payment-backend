@@ -11,6 +11,7 @@ router.get("/:userId", async (req, res) => {
     try {
         const user = await userController.getUser(req.params.userId);
         res.status(200);
+        res.contentType("application/json");
         res.send(user);
     } catch (error) {
         res.status(500);
