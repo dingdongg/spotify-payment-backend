@@ -4,9 +4,11 @@ import UserController from './controllers/UserController';
 import dotenv from "dotenv";
 import { connect } from "./database/db";
 import bodyParser from 'body-parser';
+import userRouter from "./routers/user_router";
 
 const app = express();
 app.use(bodyParser.json());
+app.use("/users", userRouter);
 dotenv.config();
 
 app.get("/", async (req, res) => {
