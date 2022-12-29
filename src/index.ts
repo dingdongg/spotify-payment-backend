@@ -1,7 +1,7 @@
 import express from 'express';
 import { IUser, User } from "./database/models/User";
 import UserController from './controllers/UserController';
-import PaymentsController from './controllers/PaymentsController';
+import PaymentController from './controllers/PaymentController';
 import dotenv from "dotenv";
 import { connect } from "./database/db";
 import bodyParser from 'body-parser';
@@ -14,34 +14,9 @@ dotenv.config();
 
 app.get("/", async (req, res) => {
     console.log("GOT GET REQUEST");
-
-    // const test = {
-    //     firstName: "Gunyup",
-    //     lastName: "Tandyo",
-    //     email: "test@gmail.com",
-    //     password: "test",
-    //     accountBalance: 452
-
-    // }
-    // const userController = new UserController();
-    // await userController.createUser(test as IUser);
-    // await userController.cronPayment();
-
-    // const test = {
-    //     paymentAmount: 24,
-    //     paymentDate: new Date(),
-    //     paymentStatus: Status[2]
-    // }
-    // console.log(test);
-    // const paymentController = new PaymentsController();
-    // await paymentController.createPayment(test as IPayment);
-    
-
     const user = await User.find().exec();
     res.send(user);
 
-    // const payments = await Payments.find().exec();
-    // res.send(payments);
 });
 
 app.post("/", async (req, res) => {
