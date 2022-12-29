@@ -7,9 +7,13 @@ import bodyParser from 'body-parser';
 import userRouter from "./routers/user_router";
 
 const app = express();
-app.use(bodyParser.json());
-app.use("/users", userRouter);
 dotenv.config();
+
+// middlewares
+app.use(bodyParser.json());
+
+// routers
+app.use("/users", userRouter);
 
 app.get("/", async (req, res) => {
     console.log("GOT GET REQUEST");
