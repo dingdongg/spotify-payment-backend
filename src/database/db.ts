@@ -28,5 +28,16 @@ export const connect = () => {
                 console.error(err);
             })
     } else if (process.env.NODE_ENV === "test") {
-
+        mongoose.connect(process.env.TEST_DB as string)
+            .then(() => {
+                console.log("connected to testing DB");
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+    } else {
+        console.log("INVALID");
+    }
+}
       
+}
