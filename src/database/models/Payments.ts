@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 export interface IPayment {
 
-    memberId: Schema.Types.ObjectId,
+    memberId: Schema.Types.ObjectId |null ,
     paymentAmount: Number,
     paymentDate:Date,
     paymentStatus: String;
