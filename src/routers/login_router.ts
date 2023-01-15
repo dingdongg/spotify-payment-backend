@@ -25,7 +25,7 @@ router.use(session({
     secret: process.env.SESSION_SECRET as string,
     name: "splitify-connection",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: new RedisStore({ client: redisClient }),
     cookie: {
         // secure: true,
