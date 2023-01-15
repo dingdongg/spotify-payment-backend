@@ -76,7 +76,8 @@ router.post("/", async (req, res, next) => {
 
 router.post("/logout", async (req, res, next) => {
 
-    req.session.userId = null;
+    delete req.session.userId;
+    
     req.session.destroy((err) => {
         console.log('logged out');
         res.redirect("/");
