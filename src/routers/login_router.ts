@@ -58,8 +58,14 @@ router.post("/", async (req, res, next) => {
 
             req.session.regenerate((err) => {
                 if (err) next(err);
-                
-            })
+
+                req.session.userId = user.id;
+
+                req.session.save((err) => {
+                    if (err) next(err);
+                    res.redirect("/");
+                });
+            });
         }
     } else {
         res.status(404).send({
@@ -67,5 +73,14 @@ router.post("/", async (req, res, next) => {
         });
     }
 });
+
+router.post("/logout", async (req, res, next) => {
+
+    req.session.userId = null;
+    req.session.destroy((err) => {
+        console.log('logged out');
+        res.redirect("/");
+    });
+})
 
 export default router;
