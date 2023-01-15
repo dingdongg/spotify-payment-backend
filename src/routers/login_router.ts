@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import { User } from '../database/models/User';
 import bcrypt from "bcrypt";
 import session from "express-session";
@@ -32,6 +32,15 @@ router.use(session({
         sameSite: "lax", 
     },
 }))
+
+const isAuthenticated: RequestHandler = (req, res, next) => {
+    if (req.session.userId) {
+        console.log("logged in!");
+        next();
+    } else {
+        res.redirect("/");
+    }
+}
 
 router.get("/", async (req, res) => {
     console.log(req.sessionID);
@@ -74,10 +83,10 @@ router.post("/", async (req, res, next) => {
     }
 });
 
-router.post("/logout", async (req, res, next) => {
+router.post("/logout", isAuthenticated, async (req, res, next) => {
 
     delete req.session.userId;
-    
+
     req.session.destroy((err) => {
         console.log('logged out');
         res.redirect("/");
