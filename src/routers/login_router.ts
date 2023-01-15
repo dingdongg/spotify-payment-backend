@@ -1,53 +1,11 @@
-import express, { RequestHandler } from 'express';
+import express from 'express';
 import { User } from '../database/models/User';
 import bcrypt from "bcrypt";
-import session from "express-session";
-import redis from "connect-redis";
-import { createClient } from "redis";
+import { isAuthenticated } from '../middleware/authentication';
 
 const router = express();
 
-const RedisStore = redis(session);
-const redisClient = createClient({ legacyMode: true });
-
-function connectRedis() {
-    redisClient.connect()
-        .then(() => {
-            console.log("connected to redis");
-        })
-        .catch(err => console.error(err));
-    // redisClient.on("error", () => console.error("Failed to connect to Redis"));
-    // redisClient.on("connect", () => console.log("Connected to Redis!"));
-}
-connectRedis();
-
-router.use(session({
-    secret: process.env.SESSION_SECRET as string,
-    name: "splitify-connection",
-    resave: false,
-    saveUninitialized: false,
-    store: new RedisStore({ client: redisClient }),
-    cookie: {
-        // secure: true,
-        sameSite: "lax", 
-    },
-}))
-
-const isAuthenticated: RequestHandler = (req, res, next) => {
-    if (req.session.userId) {
-        console.log("logged in!");
-        next();
-    } else {
-        res.redirect("/");
-    }
-}
-
-router.get("/", async (req, res) => {
-    console.log(req.sessionID);
-    res.status(200).end();
-})
-
-router.post("/", async (req, res, next) => {
+router.post("/login", async (req, res, next) => {
 
     const { username, password } = req.body;
     /**
@@ -56,26 +14,23 @@ router.post("/", async (req, res, next) => {
      * 3. send 204 back + session ID from 2 as cookies
      */
     const user = await User.findOne({
-        username, 
+        username, // we need to ensure that email addresses are unique, or this won't always work
     }).exec();
     
-    if (user) {
-        const passwordMatches = await bcrypt.compare(password, user.password);
-        if (passwordMatches) {
-            // create and link session ID to this user
-            // send 204 + session ID as cookies
+    if (user && bcrypt.compareSync(password, user.password)) {
+        // create and link session ID to this user
+        // send 204 + session ID as cookies
 
-            req.session.regenerate((err) => {
+        req.session.regenerate((err) => {
+            if (err) next(err);
+
+            req.session.userId = user.id;
+
+            req.session.save((err) => {
                 if (err) next(err);
-
-                req.session.userId = user.id;
-
-                req.session.save((err) => {
-                    if (err) next(err);
-                    res.redirect("/");
-                });
+                res.status(200).redirect("/");
             });
-        }
+        });
     } else {
         res.status(404).send({
             error: "User was not found."
