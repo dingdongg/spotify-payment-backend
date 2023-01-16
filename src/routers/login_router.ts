@@ -2,6 +2,7 @@ import express from 'express';
 import { User } from '../database/models/User';
 import bcrypt from "bcrypt";
 import { isAuthenticated } from '../middleware/authentication';
+import UserController from '../controllers/UserController';
 
 const router = express();
 
@@ -20,11 +21,13 @@ router.post("/login", async (req, res, next) => {
     if (user && bcrypt.compareSync(password, user.password)) {
         // create and link session ID to this user
         // send 204 + session ID as cookies
+        const csrfToken = req.session.csrfToken;
 
         req.session.regenerate((err) => {
             if (err) next(err);
 
             req.session.userId = user.id;
+            req.session.csrfToken = csrfToken;
 
             req.session.save((err) => {
                 if (err) next(err);
@@ -46,6 +49,24 @@ router.post("/logout", isAuthenticated, async (req, res, next) => {
         console.log('logged out');
         res.redirect("/");
     });
+});
+
+router.post("/register", async (req, res, next) => {
+
+    const { 
+        email, 
+        password,
+        firstName,
+        lastName,
+    } = req.body;
+
+    const userController = new UserController();
+
+    await userController.createUser({
+        email, password, firstName, lastName,
+    });
+
+    res.status(204).redirect("/");
 })
 
 export default router;
