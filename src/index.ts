@@ -7,16 +7,34 @@ import userRouter from "./routers/user_router";
 import loginRouter from "./routers/login_router";
 import { isAuthenticated } from './middleware/authentication';
 import { redisSession } from './middleware/redis_config';
+import { csrfSync } from "csrf-sync";
+
+const {
+    generateToken,
+    csrfSynchronisedProtection,
+    getTokenFromRequest,
+} = csrfSync();
 
 const app = express();
 dotenv.config();
 
 // middlewares
-app.use(bodyParser.json());
-app.use(redisSession);
+app.use(bodyParser.json()); // json parsing
+app.use(redisSession); // session-based authentication
 // use synchronized token pattern for CSRF protection
+app.use((req, res, next) => {
+    console.log("token in header: ", getTokenFromRequest(req));
+    next();
+});
 
 // routers
+app.get("/csrf-token", async (req, res, next) => { 
+    res.json({
+        token: generateToken(req),
+    });
+})
+app.use(csrfSynchronisedProtection);
+
 app.use("/", loginRouter);
 app.use("/users", isAuthenticated, userRouter);
 
