@@ -5,6 +5,7 @@ import { connect } from '../../../src/database/db';
 import { Payments } from "../../../src/database/models/Payments";
 import UserController from "../../../src/controllers/UserController";
 import { User } from "../../../src/database/models/User";
+import Status from "../../../src/enum/Status"
 
 const expect = chai.expect;
 
@@ -30,22 +31,48 @@ describe ("Payment Tests", ()=>{
         await userController.createUser({
             ...userInfo
         })
-
-        const user = await User.findOne({
-            email: "michaeltest@gmail.com"
-        }).exec();
-        
+        let userId;
+        try {
+            const user = await User.findOne({
+                email: "michaeltest@gmail.com"
+            }).exec();
+            
+            if (user) {
+                userId = user._id;
+            } else {
+                console.log("No user found with that email");
+            }
+        } catch (err) {
+            console.error(err);
+        }
+     
+        let date = new Date();
         const paymentInfo = {
-            memberId: new Schema.Types.ObjectId("63aa552265158efd2fba1a6f"),
+            memberId: userId?.valueOf(),
             paymentAmount: 20,
-            paymentDate: new Date(),
-            paymentStatus: "test"
+            paymentDate: date,
+            paymentStatus: Status[0].toString()
         };
+        console.log(paymentInfo)
+        
         await paymentController.createPayment({ 
             ...paymentInfo
         })
 
-    
-})
+        const paymentInstance = await Payments.findOne({
+            memberId: userId?.valueOf()
+        }).exec()
+        
+        expect(paymentInstance).to.exist;
+        expect(paymentInstance?.paymentDate).to.include(paymentInfo.paymentDate);
+        expect(paymentInstance?.memberId).to.include(paymentInfo.memberId);
+        expect(paymentInstance?.paymentAmount).to.equal(paymentInfo.paymentAmount);
+        expect(paymentInstance?.paymentStatus).to.equal(paymentInfo.paymentStatus);
+        
+        
+})  
+    it ("PaymentController::createPayment successfully upload user in DB", async () =>{
+
+    })
 
 })
