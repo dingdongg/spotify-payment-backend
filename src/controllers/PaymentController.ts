@@ -25,7 +25,7 @@ export default class PaymentController {
         return payments;
     }
 
-    public async findUserPaymentHistory(userId: string): Promise<Object>{
+    public async findUserPaymentHistory(userId: Object|undefined): Promise<Object>{
         const payments = await Payments.find({memberId: userId}).sort({paymentDate: 1}).exec();
         return payments;
     }
