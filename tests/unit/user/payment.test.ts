@@ -86,21 +86,7 @@ describe ("Payment Tests", ()=>{
         await userController.createUser({
             ...userInfo1
         })
-        // const userInfo2 = {
-        //     firstName: "donggyu",
-        //     lastName: "test",
-        //     email: "donggyutest@gmail.com",
-        //     password: "test"
-        // };
-        // await userController.createUser({
-            
-        //     ...userInfo2
-        // })
-
-        // const userInstance = await User.find({}).exec();
-       
-        //create multiple payment for one guy
-        //lets start with mahkels
+        
         let userId: Object|undefined;
         try {
             const user = await User.findOne({
@@ -130,6 +116,7 @@ describe ("Payment Tests", ()=>{
         }
      
         let getUserHistory = await paymentController.findUserPaymentHistory(userId?.valueOf());
+        console.log(getUserHistory)
         
         const paymentsArray = Object.values(getUserHistory);
         
@@ -172,7 +159,7 @@ describe ("Payment Tests", ()=>{
                 
             }
                 return Promise.all(payments)
-            // await Promise.all(user)
+            // await Promise.all(payments)
         })
         await Promise.all(createPayments);
 
@@ -180,6 +167,7 @@ describe ("Payment Tests", ()=>{
         console.log(getPaymentHistory)
 
         const paymentsArray = Object.values(getPaymentHistory);
+        console.log("payments array", paymentsArray)
         const sortedPayments = paymentsArray.sort((a, b) => a.paymentDate.getTime() - b.paymentDate.getTime());
 
         expect(paymentsArray).to.deep.equal(sortedPayments);
@@ -187,7 +175,15 @@ describe ("Payment Tests", ()=>{
 
         //test findUserPaymentHistory multiple 
 
-        //console.log(paymentsArray[0]._id)
+        console.log(paymentsArray[0]._id?.valueOf())
+        let testUserId = paymentsArray[0].memberId?.valueOf()
+        console.log(testUserId)
+
+        let getUserHistory = await paymentController.findUserPaymentHistory(testUserId)
+        console.log(getUserHistory)
+
+        const userPaymentArray = Object.values(getUserHistory);
+        expect(userPaymentArray.every(payment => {return payment.memberId === testUserId })).to.be.true  
     })
  
 })
