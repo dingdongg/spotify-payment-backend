@@ -5,6 +5,10 @@ export const isAuthenticated: RequestHandler = (req, res, next) => {
         console.log("logged in!");
         next();
     } else {
-        res.status(401).send(`<p>you are not authenticated.</p>`);
+        res.status(401).send(`
+            <p>
+                you are not authenticated.
+            </p>
+        `);
     }
 }
