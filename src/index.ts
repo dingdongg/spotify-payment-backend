@@ -13,8 +13,6 @@ import { errorHandler } from './middleware/error_handler';
 const {
     generateToken,
     csrfSynchronisedProtection,
-    getTokenFromRequest,
-    getTokenFromState,
 } = csrfSync();
 
 const app = express();
@@ -23,11 +21,6 @@ dotenv.config();
 // middlewares
 app.use(bodyParser.json()); // json parsing
 app.use(redisSession); // session-based authentication
-app.use((req, res, next) => {
-    console.log("HEADER: ", getTokenFromRequest(req));
-    console.log("STATE:  ", getTokenFromState(req));
-    next();
-});
 
 // routers
 app.get("/csrf-token", async (req, res, next) => { 
@@ -44,8 +37,6 @@ app.use(auth.isAuthenticated);
 app.use("/users", userRouter);
 
 app.get("/", async (req, res) => {
-    console.log("GOT GET REQUEST");
-    console.log("GET / csrf token: ", req.session.csrfToken);
     res.send(`<p>GET /</p>`);
 });
 
