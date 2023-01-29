@@ -12,11 +12,11 @@ export default class PaymentController {
         }
     }
 
-    public async deletePayment(paymentId: string): Promise<void> {
+    public async deletePayment(paymentId: Object|undefined): Promise<void> {
         await Payments.findByIdAndDelete(paymentId).exec();
     }
 
-    public async editPayment(paymentId: string, newInfo: IPayment): Promise<void> {
+    public async editPayment(paymentId: Object|undefined, newInfo: IPayment): Promise<void> {
         await Payments.findByIdAndUpdate(paymentId, newInfo).exec();
     }
     
