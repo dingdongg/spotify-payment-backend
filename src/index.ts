@@ -4,7 +4,7 @@ import { connect } from "./database/db";
 import bodyParser from 'body-parser';
 import userRouter from "./routers/user_router";
 import loginRouter from "./routers/login_router";
-import { isAuthenticated } from './middleware/authentication';
+import auth from './middleware/auth';
 import { redisSession } from './middleware/redis_config';
 import { csrfSync } from "csrf-sync";
 import { errorHandler as csrfErrorHandler } from './middleware/csrf_error_handler';
@@ -39,7 +39,9 @@ app.get("/csrf-token", async (req, res, next) => {
 app.use(csrfSynchronisedProtection); 
 
 app.use("/", loginRouter);
-app.use("/users", isAuthenticated, userRouter);
+// all routes below this middleware requires authentication
+app.use(auth.isAuthenticated);
+app.use("/users", userRouter);
 
 app.get("/", async (req, res) => {
     console.log("GOT GET REQUEST");
