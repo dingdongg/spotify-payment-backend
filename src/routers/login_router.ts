@@ -1,7 +1,7 @@
 import express from 'express';
 import { User } from '../database/models/User';
 import bcrypt from "bcrypt";
-import { isAuthenticated } from '../middleware/authentication';
+import auth from '../middleware/auth';
 import UserController from '../controllers/UserController';
 import { csrfSync } from "csrf-sync";
 
@@ -43,12 +43,12 @@ router.post("/login", async (req, res, next) => {
     }
 });
 
-router.post("/logout", isAuthenticated, async (req, res, next) => {
+router.post("/logout", auth.isAuthenticated, async (req, res, next) => {
     delete req.session.userId;
 
     req.session.destroy((err) => {
         console.log('logged out');
-        res.redirect("/");
+        res.status(200).end();
     });
 });
 
