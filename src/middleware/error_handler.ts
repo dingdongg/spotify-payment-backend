@@ -1,9 +1,6 @@
 import { ErrorRequestHandler } from "express";
+import { sendError } from "../helpers/error_response";
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    res.status(500).send(`
-        <p>
-            Something went wrong!
-        </p>
-    `);
+    sendError(res, 500, "something went wrong!");
 }
