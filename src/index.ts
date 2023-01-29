@@ -1,5 +1,4 @@
 import express from 'express';
-import { User } from "./database/models/User";
 import dotenv from "dotenv";
 import { connect } from "./database/db";
 import bodyParser from 'body-parser';
@@ -8,11 +7,14 @@ import loginRouter from "./routers/login_router";
 import { isAuthenticated } from './middleware/authentication';
 import { redisSession } from './middleware/redis_config';
 import { csrfSync } from "csrf-sync";
+import { errorHandler as csrfErrorHandler } from './middleware/csrf_error_handler';
+import { errorHandler } from './middleware/error_handler';
 
 const {
     generateToken,
     csrfSynchronisedProtection,
     getTokenFromRequest,
+    getTokenFromState,
 } = csrfSync();
 
 const app = express();
@@ -21,9 +23,9 @@ dotenv.config();
 // middlewares
 app.use(bodyParser.json()); // json parsing
 app.use(redisSession); // session-based authentication
-// use synchronized token pattern for CSRF protection
 app.use((req, res, next) => {
-    console.log("token in header: ", getTokenFromRequest(req));
+    console.log("HEADER: ", getTokenFromRequest(req));
+    console.log("STATE:  ", getTokenFromState(req));
     next();
 });
 
@@ -33,22 +35,26 @@ app.get("/csrf-token", async (req, res, next) => {
         token: generateToken(req),
     });
 })
-app.use(csrfSynchronisedProtection);
+// CSRF protection; all routes below this is protected from CSRF :)
+app.use(csrfSynchronisedProtection); 
 
 app.use("/", loginRouter);
 app.use("/users", isAuthenticated, userRouter);
 
 app.get("/", async (req, res) => {
     console.log("GOT GET REQUEST");
-    console.log(req.session);
-    const user = await User.find().exec();
-    res.send(user);
+    console.log("GET / csrf token: ", req.session.csrfToken);
+    res.send(`<p>GET /</p>`);
 });
 
 app.post("/", async (req, res) => {
     console.log("BODY", req.body);
     res.status(204).send();
 })
+
+// error handler middleware
+app.use(csrfErrorHandler);
+app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
     connect();
