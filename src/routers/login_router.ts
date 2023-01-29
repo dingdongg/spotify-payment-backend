@@ -3,35 +3,37 @@ import { User } from '../database/models/User';
 import bcrypt from "bcrypt";
 import { isAuthenticated } from '../middleware/authentication';
 import UserController from '../controllers/UserController';
+import { csrfSync } from "csrf-sync";
 
+const { generateToken } = csrfSync();
 const router = express();
 
 router.post("/login", async (req, res, next) => {
+    const { 
+        email, 
+        password,
+    } = req.body;
 
-    const { username, password } = req.body;
-    /**
-     * 1. validate username and password
-     * 2. if step 1 passed, create and link session ID to this user, store in DB?
-     * 3. send 204 back + session ID from 2 as cookies
-     */
     const user = await User.findOne({
-        username, // we need to ensure that email addresses are unique, or this won't always work
+        email,
     }).exec();
     
     if (user && bcrypt.compareSync(password, user.password)) {
-        // create and link session ID to this user
-        // send 204 + session ID as cookies
-        const csrfToken = req.session.csrfToken;
-
         req.session.regenerate((err) => {
             if (err) next(err);
-
+            
+            // regenerate synchronizer token to for extra security
+            req.session.csrfToken = generateToken(req);
             req.session.userId = user.id;
-            req.session.csrfToken = csrfToken;
+
+            console.log("new sesh: ", req.session);
 
             req.session.save((err) => {
                 if (err) next(err);
-                res.status(200).redirect("/");
+
+                res.status(200).send({
+                    "newToken": req.session.csrfToken,
+                });
             });
         });
     } else {
@@ -42,7 +44,6 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/logout", isAuthenticated, async (req, res, next) => {
-
     delete req.session.userId;
 
     req.session.destroy((err) => {
@@ -52,7 +53,6 @@ router.post("/logout", isAuthenticated, async (req, res, next) => {
 });
 
 router.post("/register", async (req, res, next) => {
-
     const { 
         email, 
         password,
