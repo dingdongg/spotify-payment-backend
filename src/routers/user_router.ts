@@ -1,6 +1,7 @@
 import express from 'express';
 import { IUser } from "../database/models/User";
 import UserController from '../controllers/UserController';
+import auth from '../middleware/auth';
 
 const router = express();
 
@@ -31,7 +32,7 @@ router.post("/register_user", async (req, res) => {
     }
 });
 
-router.delete("/delete_user/:userId", async (req, res) => {
+router.delete("/delete_user/:userId", auth.isAuthorized, async (req, res) => {
     const userController = new UserController();
 
     try {
