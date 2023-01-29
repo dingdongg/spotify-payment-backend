@@ -24,7 +24,7 @@ app.post("/", async (req, res) => {
    
     const { body } = req;
     console.log("BODY", req.body);
-    console.log(req);
+    console.log("rq",req);
     await userController.createUser(body as IUser);
     
     res.status(204).send();
