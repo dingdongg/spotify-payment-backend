@@ -5,6 +5,8 @@ import { createClient } from "redis";
 const RedisStore = redis(session);
 const redisClient = createClient({ legacyMode: true });
 
+const SESSION_TIMEOUT_MS = 300000;
+
 function connectRedis() {
     redisClient.connect()
         .then(() => {
@@ -20,11 +22,14 @@ export const redisSession = session({
     name: "splitify-connection",
     resave: false,
     saveUninitialized: false,
-    store: new RedisStore({ client: redisClient }),
+    store: new RedisStore({ 
+        client: redisClient,
+        ttl: SESSION_TIMEOUT_MS / 1000,
+    }),
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         sameSite: "lax", 
         httpOnly: true,
-        maxAge: 300000,
+        maxAge: SESSION_TIMEOUT_MS,
     },
 });
