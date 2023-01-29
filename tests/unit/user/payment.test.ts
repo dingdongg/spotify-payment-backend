@@ -18,6 +18,7 @@ describe ("Payment Tests", ()=>{
     before (async ()=> {
         await connect();
         await Payments.deleteMany({}); 
+        await User.deleteMany({});
         paymentController = new PaymentController();
         userController = new UserController();
     });
@@ -52,7 +53,7 @@ describe ("Payment Tests", ()=>{
      
         let date = new Date();
         const paymentInfo = {
-            memberId: userId?.valueOf(),
+            memberId: userId?.valueOf().toString(),
             paymentAmount: 20,
             paymentDate: date,
             paymentStatus: Status[0].toString()
@@ -77,7 +78,7 @@ describe ("Payment Tests", ()=>{
 })  
     it ("PaymentController::findUserPaymentHistory finds user and sort them in order by date", async () =>{
        //creating two different users
-       await Payments.deleteMany({});
+       await User.deleteMany({});
        await Payments.deleteMany({});
         const userInfo1 = {
             firstName: "mahkel",
@@ -105,19 +106,24 @@ describe ("Payment Tests", ()=>{
         }
         
         for (let i = 0; i < 3 ; i++){
-            
+            let date = new Date(`202${i} October 1${i}`)
+                date.setMonth(Math.floor(Math.random()*(13-1)))
+                date.setDate(Math.floor(Math.random()*(32-1)))
+                date.setHours(Math.floor(Math.random()*(23-0)),Math.floor(Math.random()*(59-0)), Math.floor(Math.random()*(59-0)) )
             const paymentInfo = {
-                memberId: userId?.valueOf(),
+                memberId: userId?.valueOf().toString(),
                 paymentAmount: Math.floor(Math.random() * (69-3)+3),
-                paymentDate: new Date(),
+                paymentDate: date,
                 paymentStatus: Status[Math.floor(Math.random()*(3-0))].toString()
             };
             await paymentController.createPayment({ 
                 ...paymentInfo
             })
         }
+
+        let testedUserId = userId?.valueOf().toString()
      
-        let getUserHistory = await paymentController.findUserPaymentHistory(userId?.valueOf());
+        let getUserHistory = await paymentController.findUserPaymentHistory(testedUserId);
         
         
         const paymentsArray = Object.values(getUserHistory);
@@ -129,7 +135,7 @@ describe ("Payment Tests", ()=>{
         
     })
 
-    it ("PaymentController:: getPaymentHistory and make sure ", async () =>{
+    it ("PaymentController:: getPaymentHistory and make sure its in order ", async () =>{
         await User.deleteMany({});
         await Payments.deleteMany({});
         const users = [
@@ -146,15 +152,19 @@ describe ("Payment Tests", ()=>{
        
         let createPayments = userInstance.map(async(data)=>{
             
-            let memberId = data._id?.valueOf();
+            let memberId = data._id?.valueOf().toString();
             
             let payments = []
             for (let i = 0; i < 3 ; i++){
+                let date = new Date(`202${i} October 1${i}`)
+                date.setMonth(Math.floor(Math.random()*(13-1)))
+                date.setDate(Math.floor(Math.random()*(32-1)))
+                date.setHours(Math.floor(Math.random()*(23-0)),Math.floor(Math.random()*(59-0)), Math.floor(Math.random()*(59-0)) )
                 
                 const paymentInfo = {
                     memberId: memberId,
                     paymentAmount: Math.floor(Math.random() * (69-3)+3),
-                    paymentDate: new Date(),
+                    paymentDate: date,
                     paymentStatus: Status[Math.floor(Math.random()*(3-0))].toString()
                 };
                 
@@ -170,7 +180,7 @@ describe ("Payment Tests", ()=>{
         
 
         const paymentsArray = Object.values(getPaymentHistory);
-        
+        console.log(paymentsArray)
         const sortedPayments = paymentsArray.sort((a, b) => a.paymentDate.getTime() - b.paymentDate.getTime());
 
         expect(paymentsArray).to.deep.equal(sortedPayments);
@@ -186,10 +196,11 @@ describe ("Payment Tests", ()=>{
         
 
         const userPaymentArray = Object.values(getUserHistory);
+        
         expect(userPaymentArray.every(payment => {return payment.memberId === testUserId })).to.be.true  
     })
 
-    it ("Payment Controller:: Delete Payment tests successfully deletes a user in DB", async()=>{
+    it ("Payment Controller:: Deletes Payment tests successfully deletes a user in DB", async()=>{
         await User.deleteMany({});
         await Payments.deleteMany({});
         const users = [
@@ -206,7 +217,7 @@ describe ("Payment Tests", ()=>{
        
         let createPayments = userInstance.map(async(data)=>{
             
-            let memberId = data._id?.valueOf();
+            let memberId = data._id?.valueOf().toString();
             
             let payments = []
             for (let i = 0; i < 3 ; i++){
@@ -274,7 +285,7 @@ describe ("Payment Tests", ()=>{
      
         let date = new Date();
         const paymentInfo = {
-            memberId: userId?.valueOf(),
+            memberId: userId?.valueOf().toString(),
             paymentAmount: 20,
             paymentDate: date,
             paymentStatus: Status[0].toString()
@@ -290,7 +301,7 @@ describe ("Payment Tests", ()=>{
         }).exec()
 
         const newPaymentInfo = {
-            memberId: userId?.valueOf(),
+            memberId: userId?.valueOf().toString(),
             paymentAmount: 50,
             paymentDate: date,
             paymentStatus: Status[2].toString()
