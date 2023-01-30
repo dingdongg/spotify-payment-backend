@@ -78,7 +78,7 @@ describe ("Payment Tests", function() {
      
         
     })  
-    it ("PaymentController::findUserPaymentHistory finds user and sort them in order by date", async function() {
+    it ("PaymentController::findUserPaymentHistory finds user's payment and sort them in order by date", async function() {
        //creating two different users
        await User.deleteMany({});
        await Payments.deleteMany({});
@@ -200,7 +200,7 @@ describe ("Payment Tests", function() {
         expect(userPaymentArray.every(payment => {return payment.memberId === testUserId })).to.be.true  
     })
 
-    it ("Payment Controller:: Deletes Payment tests successfully deletes a user in DB", async function() {
+    it ("Payment Controller:: Deletes Payment tests successfully deletes a payment in DB", async function() {
         await User.deleteMany({});
         await Payments.deleteMany({});
         const users = [
@@ -255,7 +255,7 @@ describe ("Payment Tests", function() {
         expect(deletedPayment).to.be.null
 
     })
-    it("UserController::editPayment successfully edits user in DB", async function() {
+    it("PaymentController::editPayment successfully edits user in DB", async function() {
         await User.deleteMany({});
         await Payments.deleteMany({});
 
