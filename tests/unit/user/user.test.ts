@@ -7,15 +7,19 @@ import bcrypt from 'bcrypt';
 
 const expect = chai.expect;
 
-describe("User Tests", () => {
+describe("User Tests", function() {
     let userController: UserController;
 
-    before(async () => {
+    before(async function() {
         await connect();
         userController = new UserController();
     });
 
-    it("UserController::createUser successfully uploads user instance to DB", async () => {
+    beforeEach(async function() {
+        await User.deleteMany({});
+    });
+
+    it("UserController::createUser successfully uploads user instance to DB", async function() {
         const userInfo = {
             firstName: "donggyu",
             lastName: "test",
@@ -40,7 +44,7 @@ describe("User Tests", () => {
         expect(passwordCheck).to.be.true;
     });
 
-    it("UserController::createUser successfully deletes user in DB", async () => {
+    it("UserController::createUser successfully deletes user in DB", async function() {
         await userController.createUser({
             firstName: "donggyu",
             lastName: "test",
@@ -64,8 +68,7 @@ describe("User Tests", () => {
         expect(deletedUser).to.be.null;
     });
 
-    it("UserController::editUser successfully edits user in DB", async () => {
-
+    it("UserController::editUser successfully edits user in DB", async function() {
         const oldUserInfo = {
             firstName: "OLD",
             lastName: "LAST NAME BUT OLD",
@@ -106,11 +109,7 @@ describe("User Tests", () => {
         // expect(newUser?.password).to.equal(oldUser?.password);
     });
 
-    afterEach(async () => {
-        await User.deleteMany({});
-    });
-
-    after(async () => {
+    after(async function() {
         await mongoose.disconnect();
     });
 });
