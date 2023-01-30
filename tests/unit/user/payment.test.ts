@@ -44,38 +44,37 @@ describe ("Payment Tests", ()=>{
             
             if (user) {
                 userId = user._id;
+
+                let date = new Date();
+                const paymentInfo = {
+                    memberId: userId.valueOf().toString(),
+                    paymentAmount: 20,
+                    paymentDate: date,
+                    paymentStatus: Status[0].toString()
+                };
+                
+                await paymentController.createPayment({ 
+                    ...paymentInfo
+                })
+
+                const paymentInstance = await Payments.findOne({
+                    memberId: userId?.valueOf()
+                }).exec()
+                
+                expect(paymentInstance).to.exist;
+                expect(paymentInstance?.paymentDate).to.include(paymentInfo.paymentDate);
+                expect(paymentInstance?.memberId).to.include(paymentInfo.memberId);
+                expect(paymentInstance?.paymentAmount).to.equal(paymentInfo.paymentAmount);
+                expect(paymentInstance?.paymentStatus).to.equal(paymentInfo.paymentStatus);
             } else {
-                console.log("No user found with that email");
+                expect.fail("No user found with that email");
             }
         } catch (err) {
             console.error(err);
         }
      
-        let date = new Date();
-        const paymentInfo = {
-            memberId: userId?.valueOf().toString(),
-            paymentAmount: 20,
-            paymentDate: date,
-            paymentStatus: Status[0].toString()
-        };
         
-        
-        await paymentController.createPayment({ 
-            ...paymentInfo
-        })
-
-        const paymentInstance = await Payments.findOne({
-            memberId: userId?.valueOf()
-        }).exec()
-        
-        expect(paymentInstance).to.exist;
-        expect(paymentInstance?.paymentDate).to.include(paymentInfo.paymentDate);
-        expect(paymentInstance?.memberId).to.include(paymentInfo.memberId);
-        expect(paymentInstance?.paymentAmount).to.equal(paymentInfo.paymentAmount);
-        expect(paymentInstance?.paymentStatus).to.equal(paymentInfo.paymentStatus);
-        
-        
-})  
+    })  
     it ("PaymentController::findUserPaymentHistory finds user and sort them in order by date", async () =>{
        //creating two different users
        await User.deleteMany({});
@@ -90,7 +89,7 @@ describe ("Payment Tests", ()=>{
             ...userInfo1
         })
         
-        let userId: Object|undefined;
+        let userId: Object;
         try {
             const user = await User.findOne({
                 email: "michaeltest@gmail.com"
@@ -98,41 +97,40 @@ describe ("Payment Tests", ()=>{
             
             if (user) {
                 userId = user._id;
+
+                for (let i = 0; i < 3 ; i++){
+                    let date = new Date(`202${i} October 1${i}`)
+                        date.setMonth(Math.floor(Math.random()*(13-1)))
+                        date.setDate(Math.floor(Math.random()*(32-1)))
+                        date.setHours(Math.floor(Math.random()*(23-0)),Math.floor(Math.random()*(59-0)), Math.floor(Math.random()*(59-0)) )
+                    const paymentInfo = {
+                        memberId: userId.valueOf().toString(),
+                        paymentAmount: Math.floor(Math.random() * (69-3)+3),
+                        paymentDate: date,
+                        paymentStatus: Status[Math.floor(Math.random()*(3-0))].toString()
+                    };
+                    await paymentController.createPayment({ 
+                        ...paymentInfo
+                    })
+                }
+        
+                let testedUserId = userId?.valueOf().toString()
+             
+                let getUserHistory = await paymentController.findUserPaymentHistory(testedUserId);
+                
+                
+                const paymentsArray = Object.values(getUserHistory);
+                
+                const sortedPayments = paymentsArray.sort((a, b) => a.paymentDate.getTime() - b.paymentDate.getTime());
+                
+                expect(paymentsArray).to.deep.equal(sortedPayments);
+                expect(paymentsArray.every(payment => {return payment.memberId === userId?.valueOf() })).to.be.true
             } else {
                 console.log("No user found with that email");
             }
         } catch (err) {
             console.error(err);
-        }
-        
-        for (let i = 0; i < 3 ; i++){
-            let date = new Date(`202${i} October 1${i}`)
-                date.setMonth(Math.floor(Math.random()*(13-1)))
-                date.setDate(Math.floor(Math.random()*(32-1)))
-                date.setHours(Math.floor(Math.random()*(23-0)),Math.floor(Math.random()*(59-0)), Math.floor(Math.random()*(59-0)) )
-            const paymentInfo = {
-                memberId: userId?.valueOf().toString(),
-                paymentAmount: Math.floor(Math.random() * (69-3)+3),
-                paymentDate: date,
-                paymentStatus: Status[Math.floor(Math.random()*(3-0))].toString()
-            };
-            await paymentController.createPayment({ 
-                ...paymentInfo
-            })
-        }
-
-        let testedUserId = userId?.valueOf().toString()
-     
-        let getUserHistory = await paymentController.findUserPaymentHistory(testedUserId);
-        
-        
-        const paymentsArray = Object.values(getUserHistory);
-        
-        const sortedPayments = paymentsArray.sort((a, b) => a.paymentDate.getTime() - b.paymentDate.getTime());
-        
-        expect(paymentsArray).to.deep.equal(sortedPayments);
-        expect(paymentsArray.every(payment => {return payment.memberId === userId?.valueOf() })).to.be.true                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-        
+        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
     })
 
     it ("PaymentController:: getPaymentHistory and make sure its in order ", async () =>{
@@ -180,7 +178,6 @@ describe ("Payment Tests", ()=>{
         
 
         const paymentsArray = Object.values(getPaymentHistory);
-        console.log(paymentsArray)
         const sortedPayments = paymentsArray.sort((a, b) => a.paymentDate.getTime() - b.paymentDate.getTime());
 
         expect(paymentsArray).to.deep.equal(sortedPayments);
@@ -276,44 +273,44 @@ describe ("Payment Tests", ()=>{
             
             if (user) {
                 userId = user._id;
+
+                let date = new Date();
+                const paymentInfo = {
+                    memberId: userId?.valueOf().toString(),
+                    paymentAmount: 20,
+                    paymentDate: date,
+                    paymentStatus: Status[0].toString()
+                };
+                
+                await paymentController.createPayment({ 
+                    ...paymentInfo
+                })
+
+                const paymentInstance = await Payments.findOne({
+                    memberId: userId?.valueOf()
+                }).exec()
+
+                const newPaymentInfo = {
+                    memberId: userId?.valueOf().toString(),
+                    paymentAmount: 50,
+                    paymentDate: date,
+                    paymentStatus: Status[2].toString()
+                };
+                let paymentId = (paymentInstance?._id.valueOf().toString()) as string;
+                await paymentController.editPayment(paymentId, newPaymentInfo)
+
+                const newPayment = await Payments.findOne({
+                    _id: paymentId,
+                });
+                
+                expect(newPayment).to.have.property('paymentAmount', 50);
+                expect(newPayment).to.have.property('paymentStatus', "Rejected");
             } else {
-                console.log("No user found with that email");
+                expect.fail("No user found with that email");
             }
         } catch (err) {
             console.error(err);
+            expect.fail("PaymentsController::editPayment failed");
         }
-     
-        let date = new Date();
-        const paymentInfo = {
-            memberId: userId?.valueOf().toString(),
-            paymentAmount: 20,
-            paymentDate: date,
-            paymentStatus: Status[0].toString()
-        };
-        
-        
-        await paymentController.createPayment({ 
-            ...paymentInfo
-        })
-
-        const paymentInstance = await Payments.findOne({
-            memberId: userId?.valueOf()
-        }).exec()
-
-        const newPaymentInfo = {
-            memberId: userId?.valueOf().toString(),
-            paymentAmount: 50,
-            paymentDate: date,
-            paymentStatus: Status[2].toString()
-        };
-        let paymentId = paymentInstance?._id.valueOf().toString()
-        await paymentController.editPayment(paymentId, newPaymentInfo)
-
-        const newPayment = await Payments.findOne({
-            _id: paymentId,
-        });
-        
-        expect(newPayment).to.have.property('paymentAmount', 50);
-        expect(newPayment).to.have.property('paymentStatus', "Rejected");
     })
 })
