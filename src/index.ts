@@ -7,6 +7,7 @@ import { connect } from "./database/db";
 import bodyParser from 'body-parser';
 import Status from "./enum/Status";
 import { IPayment, Payments } from './database/models/Payments';
+import composeEmail from './services/EmailServices';
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,6 +17,7 @@ app.get("/", async (req, res) => {
     console.log("GOT GET REQUEST");
     const user = await User.find().exec();
     res.send(user);
+    composeEmail()
 
 });
 
@@ -26,6 +28,7 @@ app.post("/", async (req, res) => {
     console.log("BODY", req.body);
     console.log("rq",req);
     await userController.createUser(body as IUser);
+    
     
     res.status(204).send();
 })
