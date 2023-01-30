@@ -23,7 +23,7 @@ describe ("Payment Tests", ()=>{
         userController = new UserController();
     });
 
-    it ("PaymentController::createPayment successfully upload user in DB", async () =>{
+    it ("PaymentController::createPayment successfully upload payment in DB", async () =>{
         //make mock user first
         await Payments.deleteMany({});
         await User.deleteMany({});
