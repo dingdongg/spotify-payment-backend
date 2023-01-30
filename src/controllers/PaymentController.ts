@@ -12,22 +12,23 @@ export default class PaymentController {
         }
     }
 
-    public async deletePayment(paymentId: Object|undefined): Promise<void> {
+    public async deletePayment(paymentId: string): Promise<void> {
         await Payments.findByIdAndDelete(paymentId).exec();
     }
 
-    public async editPayment(paymentId: Object|undefined, newInfo: IPayment): Promise<void> {
+    public async editPayment(paymentId: string, newInfo: IPayment): Promise<void> {
         await Payments.findByIdAndUpdate(paymentId, newInfo).exec();
     }
     
     public async getPaymentHistory(): Promise<Object> {
-        const payments = await Payments.find().sort({paymentDate: 1}).exec();
-        return payments;
+        return await Payments.find().sort({paymentDate: 1}).exec();
+        
     }
 
-    public async findUserPaymentHistory(userId: Object|undefined): Promise<Object>{
-        const payments = await Payments.find({memberId: userId}).sort({paymentDate: 1}).exec();
-        return payments;
+    public async findUserPaymentHistory(userId: string): Promise<Object>{
+       
+        return await Payments.find({memberId: userId}).sort({paymentDate: 1}).exec();
+        
     }
 
 
