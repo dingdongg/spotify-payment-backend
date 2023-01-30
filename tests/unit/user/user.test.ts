@@ -12,7 +12,6 @@ describe("User Tests", () => {
 
     before(async () => {
         await connect();
-        await User.deleteMany({});
         userController = new UserController();
     });
 
