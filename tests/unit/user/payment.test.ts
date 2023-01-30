@@ -11,19 +11,22 @@ import Status from "../../../src/enum/Status"
 const expect = chai.expect;
 
 
-describe ("Payment Tests", ()=>{
+describe ("Payment Tests", function() {
     let paymentController: PaymentController;
     let userController : UserController;
  
-    before (async ()=> {
+    before (async function() {
         await connect();
-        await Payments.deleteMany({}); 
-        await User.deleteMany({});
         paymentController = new PaymentController();
         userController = new UserController();
     });
 
-    it ("PaymentController::createPayment successfully upload payment in DB", async () =>{
+    beforeEach(async function() {
+        await Payments.deleteMany({}); 
+        await User.deleteMany({});
+    })
+
+    it ("PaymentController::createPayment successfully upload payment in DB", async function() {
         //make mock user first
         await Payments.deleteMany({});
         await User.deleteMany({});
@@ -75,7 +78,7 @@ describe ("Payment Tests", ()=>{
      
         
     })  
-    it ("PaymentController::findUserPaymentHistory finds user and sort them in order by date", async () =>{
+    it ("PaymentController::findUserPaymentHistory finds user and sort them in order by date", async function() {
        //creating two different users
        await User.deleteMany({});
        await Payments.deleteMany({});
@@ -133,7 +136,7 @@ describe ("Payment Tests", ()=>{
         }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
     })
 
-    it ("PaymentController:: getPaymentHistory and make sure its in order ", async () =>{
+    it ("PaymentController:: getPaymentHistory and make sure its in order ", async function() {
         await User.deleteMany({});
         await Payments.deleteMany({});
         const users = [
@@ -197,7 +200,7 @@ describe ("Payment Tests", ()=>{
         expect(userPaymentArray.every(payment => {return payment.memberId === testUserId })).to.be.true  
     })
 
-    it ("Payment Controller:: Deletes Payment tests successfully deletes a user in DB", async()=>{
+    it ("Payment Controller:: Deletes Payment tests successfully deletes a user in DB", async function() {
         await User.deleteMany({});
         await Payments.deleteMany({});
         const users = [
@@ -252,7 +255,7 @@ describe ("Payment Tests", ()=>{
         expect(deletedPayment).to.be.null
 
     })
-    it("UserController::editPayment successfully edits user in DB", async () => {
+    it("UserController::editPayment successfully edits user in DB", async function() {
         await User.deleteMany({});
         await Payments.deleteMany({});
 
