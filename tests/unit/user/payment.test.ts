@@ -255,7 +255,7 @@ describe ("Payment Tests", function() {
         expect(deletedPayment).to.be.null
 
     })
-    it("PaymentController::editPayment successfully edits user in DB", async function() {
+    it("PaymentController::editPayment successfully edits payment in DB", async function() {
         await User.deleteMany({});
         await Payments.deleteMany({});
 
