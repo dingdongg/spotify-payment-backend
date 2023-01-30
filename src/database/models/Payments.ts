@@ -2,10 +2,10 @@ import { Schema, model } from "mongoose";
 
 export interface IPayment {
 
-    memberId: String |undefined ,
-    paymentAmount: Number,
-    paymentDate:Date,
-    paymentStatus: String;
+    memberId: string;
+    paymentAmount: number;
+    paymentDate: Date;
+    paymentStatus: string;
 
 }
 
