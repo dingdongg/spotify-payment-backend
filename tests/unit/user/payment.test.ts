@@ -123,10 +123,11 @@ describe ("Payment Tests", function() {
                 
                 
                 const paymentsArray = Object.values(getUserHistory);
+
+                const paymentsArrayCopy = paymentsArray.slice();
+                const sortedPaymentsCopy = paymentsArrayCopy.sort((a, b) => a.paymentDate.getTime() - b.paymentDate.getTime());
                 
-                const sortedPayments = paymentsArray.sort((a, b) => a.paymentDate.getTime() - b.paymentDate.getTime());
-                
-                expect(paymentsArray).to.deep.equal(sortedPayments);
+                expect(paymentsArray).to.deep.equal(sortedPaymentsCopy);
                 expect(paymentsArray.every(payment => {return payment.memberId === userId?.valueOf() })).to.be.true
             } else {
                 console.log("No user found with that email");
@@ -181,9 +182,11 @@ describe ("Payment Tests", function() {
         
 
         const paymentsArray = Object.values(getPaymentHistory);
-        const sortedPayments = paymentsArray.sort((a, b) => a.paymentDate.getTime() - b.paymentDate.getTime());
+        const paymentsArrayCopy = paymentsArray.slice()
 
-        expect(paymentsArray).to.deep.equal(sortedPayments);
+        const sortedPaymentsCopy = paymentsArrayCopy.sort((a, b) => a.paymentDate.getTime() - b.paymentDate.getTime());
+
+        expect(paymentsArray).to.deep.equal(sortedPaymentsCopy);
         expect(paymentsArray.length).to.eql(9)
 
         //test findUserPaymentHistory multiple 
