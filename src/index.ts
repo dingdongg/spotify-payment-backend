@@ -13,9 +13,7 @@ const app = express();
 app.use(bodyParser.json());
 dotenv.config();
 
-app.post ("/send-email",(req,res)=>{
-    console.log(req.body.emailBody)
-})
+app.use (composeEmail)
 app.get("/", async (req, res) => {
     console.log("GOT GET REQUEST");
     const user = await User.find().exec();
