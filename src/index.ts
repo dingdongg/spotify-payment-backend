@@ -9,6 +9,7 @@ import { redisSession } from './middleware/redis_config';
 import { csrfSync } from "csrf-sync";
 import { errorHandler as csrfErrorHandler } from './middleware/csrf_error_handler';
 import { errorHandler } from './middleware/error_handler';
+import cors from "cors";
 
 const {
     generateToken,
@@ -18,9 +19,14 @@ const {
 const app = express();
 dotenv.config();
 
+// const corsOptions = {
+//     origin: "http://localhost:5173",
+// };
+
 // middlewares
 app.use(bodyParser.json()); // json parsing
 app.use(redisSession); // session-based authentication
+// app.use(cors(corsOptions));
 
 // routers
 app.get("/csrf-token", async (req, res, next) => { 
