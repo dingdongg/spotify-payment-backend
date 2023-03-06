@@ -14,6 +14,10 @@ function validate(input: string | undefined): boolean {
  * connects to DB, based on NODE_ENV
  */
 export const connect = () => {
+
+    if (validate(process.env.TEST_DB)) {
+        console.log("VALID");
+
     if (process.env.NODE_ENV === "dev") {
         mongoose.connect(process.env.DEV_DB as string)
             .then(() => {
@@ -34,4 +38,6 @@ export const connect = () => {
     } else {
         console.log("INVALID");
     }
+}
+      
 }
