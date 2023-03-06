@@ -32,14 +32,14 @@ router.post("/register_user", async (req, res) => {
     }
 });
 
-router.delete("/delete_user/:userId", auth.isAuthorized, async (req, res) => {
+router.delete("/delete_user/:userId", auth.isAuthorized, async (req, res, next) => {
     const userController = new UserController();
 
     // authenticated user is trying to delete self, don't allow this
     if (req.session.userId === req.params.userId) {
         res.status(405).send("Cannot self-delete the authenticated user.");
         res.end();
-        return;
+        next();
     }
 
     try {
