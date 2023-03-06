@@ -42,14 +42,14 @@ router.delete("/delete_user/:userId", auth.isAuthorized, async (req, res, next) 
         res.status(405).send("Cannot self-delete the authenticated user.");
         res.end();
         next();
-    }
-
-    try {
-        await userController.deleteUser(sanitizedRequestId);
-        res.status(204).end();
-    } catch (error) {
-        res.status(500);
-        res.send("User could not be deleted.");
+    } else {
+        try {
+            await userController.deleteUser(sanitizedRequestId);
+            res.status(204).end();
+        } catch (error) {
+            res.status(500);
+            res.send("User could not be deleted.");
+        }
     }
 });
 
