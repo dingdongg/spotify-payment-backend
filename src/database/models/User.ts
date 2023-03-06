@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model } from "mongoose";
 
 export interface IUser {
     username?: string; // remove and use email as username?
@@ -37,8 +37,6 @@ const userSchema = new Schema<IUser>({
     adminStatus: Boolean,
     dateCreated: Date,
 });
-
-
 
 export const User = model<IUser>("User", userSchema);
 

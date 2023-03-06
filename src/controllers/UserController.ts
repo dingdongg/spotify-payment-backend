@@ -10,6 +10,15 @@ export default class UserController {
         // ?
     }
 
+    public async getUser(userId: string): Promise<IUser> {
+        
+        const user = await User.findById(userId, "firstName lastName email").exec();
+        if (!user) {
+            throw new Error("404: could not find user");
+        }
+        return user as IUser;
+    }
+
     public async createUser(newUserInfo: IUser): Promise<void> {
 
         const salt = await bcrypt.genSalt(10);
