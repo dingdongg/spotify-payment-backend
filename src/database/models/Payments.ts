@@ -2,15 +2,15 @@ import { Schema, model } from "mongoose";
 
 export interface IPayment {
 
-    memberId: Schema.Types.ObjectId |null ,
-    paymentAmount: Number,
-    paymentDate:Date,
-    paymentStatus: String;
+    memberId: string;
+    paymentAmount: number;
+    paymentDate: Date;
+    paymentStatus: string;
 
 }
 
 const paymentsSchema = new Schema <IPayment>({
-    memberId: { type: Schema.Types.ObjectId, required: true, ref: 'User'},
+    memberId: { type: String , required: true, ref: 'User'},
     paymentAmount: { type: Number, required: true },
     paymentDate: { type: Date, required: true },
     paymentStatus: { type: String, required: true }
