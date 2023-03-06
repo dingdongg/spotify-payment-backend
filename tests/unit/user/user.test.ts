@@ -41,7 +41,7 @@ describe("User Tests", () => {
         expect(passwordCheck).to.be.true;
     });
 
-    it("UserController::createUser successfully deletes user in DB", async () => {
+    it("UserController::deleteUser successfully deletes user in DB", async () => {
         await userController.createUser({
             firstName: "donggyu",
             lastName: "test",
@@ -106,6 +106,24 @@ describe("User Tests", () => {
          */
         // expect(newUser?.password).to.equal(oldUser?.password);
     });
+
+    it("UserController::getUser successfully gets user in DB", async () => {
+        await userController.createUser({
+            firstName: "donggyu",
+            lastName: "test",
+            email: "testing123@gmail.com",
+            password: "pokemon123",
+        });
+
+        const userInDb = await User.findOne({
+            email: "testing123@gmail.com",
+        }).exec();
+
+        const user = await userController.getUser(userInDb?.id);
+        expect(user).to.have.property("firstName", "donggyu");
+        expect(user).to.have.property("lastName", "test");
+        expect(user).to.have.property("email", "testing123@gmail.com");
+    })
 
     afterEach(async () => {
         await User.deleteMany({});
