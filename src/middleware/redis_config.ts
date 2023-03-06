@@ -5,7 +5,7 @@ import { createClient } from "redis";
 const RedisStore = redis(session);
 const redisClient = createClient({ legacyMode: true });
 
-const SESSION_TIMEOUT_MS = 300000;
+const SESSION_TIMEOUT_MS = 3000000;
 
 function connectRedis() {
     redisClient.connect()
